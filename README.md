@@ -16,7 +16,14 @@ Le réseau que nous considérons modélise une colonne corticale constituée d�
 neurone de notre réseau).  On désignera l’activité du réseau qui en résulte sous le terme d’activité en sortie (output activity).
 
 L’entrée fournie au réseau dépend de l’orientation θ et de la fréquence spatiale λ du stimulus présenté, qui sont encodées dans la couche précédente. Pour des valeurs de θ et λ données, l’activité totale en entrée du neurone ij, a_ij, est la somme de deux termes : le premier correspond à l’entrée moyenne f_ij (θ,λ), le second ξij à un terme de bruit autour de cette activité moyenne en entrée :
-a_ij= f_ij (θ,λ)+ ξ_ij
+
+<a href="https://www.codecogs.com/eqnedit.php?latex=$$w_{ij}&space;=&space;c\sum_{\mu=1}^{m}p_{i}^{\mu}p_{j}^{\mu}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$w_{ij}&space;=&space;c\sum_{\mu=1}^{m}p_{i}^{\mu}p_{j}^{\mu}$$" title="$$w_{ij} = c\sum_{\mu=1}^{m}p_{i}^{\mu}p_{j}^{\mu}$$" /></a>
+
+L’activité moyenne en entrée du neurone ij pour un stimulus d’orientation θ, de longueur d’onde spatiale λ et de contraste C, f_ij (θ,λ), est choisie de sorte à reproduire des courbes d’accord (tuning curves) physiologiquement réalistes – des profils en forme de cloche dont l’amplitude est proportionnelle au contraste. Pour cela, on choisit de prendre des fonctions circulaires normales avec un terme d’activité spontanée ν en plus :
+
+ 
+ 
+
 L’activité moyenne en entrée du neurone ij pour un stimulus d’orientation θ, de longueur d’onde spatiale λ et de contraste C, f_ij (θ,λ), est choisie de sorte à reproduire des courbes d’accord (tuning curves) physiologiquement réalistes – des profils en forme de cloche dont l’amplitude est proportionnelle au contraste. Pour cela, on choisit de prendre des fonctions circulaires normales avec un terme d’activité spontanée ν en plus :
 
 f_ij (θ,λ)=KCexp((cos⁡(θ-θ_i )-1)/(σ_θ^2 )+(cos⁡(λ-λ_i )-1)/(σ_λ^2 ))+ν
