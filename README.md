@@ -17,16 +17,11 @@ neurone de notre réseau).  On désignera l’activité du réseau qui en résul
 
 L’entrée fournie au réseau dépend de l’orientation θ et de la fréquence spatiale λ du stimulus présenté, qui sont encodées dans la couche précédente. Pour des valeurs de θ et λ données, l’activité totale en entrée du neurone ij, a_ij, est la somme de deux termes : le premier correspond à l’entrée moyenne f_ij (θ,λ), le second ξij à un terme de bruit autour de cette activité moyenne en entrée :
 
-<a href="https://www.codecogs.com/eqnedit.php?latex=a_{ij}=&space;f_{ij}&space;(\theta&space;,\lambda&space;)&plus;&space;\xi_{ij}" 
+<a href="https://www.codecogs.com/eqnedit.php?latex=a_{ij}=&space;f_{ij}&space;(\theta&space;,\lambda&space;)&plus;&space;\xi_{ij}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?a_{ij}=&space;f_{ij}&space;(\theta&space;,\lambda&space;)&plus;&space;\xi_{ij}" title="a_{ij}= f_{ij} (\theta ,\lambda )+ \xi_{ij}" /></a>
 
 L’activité moyenne en entrée du neurone ij pour un stimulus d’orientation θ, de longueur d’onde spatiale λ et de contraste C, f_ij (θ,λ), est choisie de sorte à reproduire des courbes d’accord (tuning curves) physiologiquement réalistes – des profils en forme de cloche dont l’amplitude est proportionnelle au contraste. Pour cela, on choisit de prendre des fonctions circulaires normales avec un terme d’activité spontanée ν en plus :
 
 <a href="https://www.codecogs.com/eqnedit.php?latex=$$f_{ij}&space;(\theta,\lambda)&space;=&space;KCexp&space;\left&space;(&space;\frac{&space;cos\left&space;(\theta-\theta_i&space;\right)-&space;1}{\sigma&space;_{\theta&space;}^{2}}\:&space;&plus;&space;\,&space;\frac{&space;cos\left&space;(\lambda-\lambda_i&space;\right)-&space;1}{\sigma&space;_{\lambda&space;}^{2}}&space;\right)&space;&plus;&space;\nu$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$f_{ij}&space;(\theta,\lambda)&space;=&space;KCexp&space;\left&space;(&space;\frac{&space;cos\left&space;(\theta-\theta_i&space;\right)-&space;1}{\sigma&space;_{\theta&space;}^{2}}\:&space;&plus;&space;\,&space;\frac{&space;cos\left&space;(\lambda-\lambda_i&space;\right)-&space;1}{\sigma&space;_{\lambda&space;}^{2}}&space;\right)&space;&plus;&space;\nu$$" title="$$f_{ij} (\theta,\lambda) = KCexp \left ( \frac{ cos\left (\theta-\theta_i \right)- 1}{\sigma _{\theta }^{2}}\: + \, \frac{ cos\left (\lambda-\lambda_i \right)- 1}{\sigma _{\lambda }^{2}} \right) + \nu$$" /></a> 
- 
-
-L’activité moyenne en entrée du neurone ij pour un stimulus d’orientation θ, de longueur d’onde spatiale λ et de contraste C, f_ij (θ,λ), est choisie de sorte à reproduire des courbes d’accord (tuning curves) physiologiquement réalistes – des profils en forme de cloche dont l’amplitude est proportionnelle au contraste. Pour cela, on choisit de prendre des fonctions circulaires normales avec un terme d’activité spontanée ν en plus :
-
-f_ij (θ,λ)=KCexp((cos⁡(θ-θ_i )-1)/(σ_θ^2 )+(cos⁡(λ-λ_i )-1)/(σ_λ^2 ))+ν
  
 où K, σ_θ et σ_λ  sont des constantes, et les θ_i et λ_j sont réparties régulièrement sur une grille de taille P_θ× P_λ  : θ_i=  2πi⁄(P_θ,i=1,…,P_θ ) et  λ_j=  2πj⁄(P_λ,j=1,…,P_λ ). Le nombre de neurones dans le réseau est donc égal à P_θ× P_λ. Notons que la fréquence spatiale est traitée comme une variable périodique afin d’éviter les effets de bord. Le choix de fonctions circulaires normales plutôt que de gaussiennes s’explique par le fait que cette fonction est périodique.
 
