@@ -1,8 +1,30 @@
 # PCBS-IdealObserver
 
 Programmation d’un réseau récurrent de neurones capable d’implémenter un estimateur de type ‘observateur idéal’.
- 
-Introduction
+
+
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
+**Table des matières**
+
+- [Programmation d’un réseau récurrent de neurones capable d’implémenter un estimateur de type ‘observateur idéal’.](#programmation-d-un-reseau-recurrent)
+    - [Introduction](#introduction)
+    - [Programmation du réseau](#programmation-du-reseau)
+        - [Activité en entrée du réseau](#activite-en-entree-du-reseau)
+        - [Dynamique du réseau](#dynamique)
+        - [Poids de filtrage](#poids-de-filtrage)
+        - [Activité en sortie du réseau](#activite-en-sortie-du-reseau)
+        - [Estimations de l’orientation et de la fréquence spatiale encodées par le réseau ](#estimations)
+        - [Moyenne et variance des estimations](#moyenne-et-variance-des-estimations)
+        - [Essai avec un réseau de 20 × 20 neurones](#essai-avec-un-reseau-20x20-neurones)
+     
+    - [Conclusion](#conclusion)
+    - [Références](#references)
+    - [Remarques finales](#remarques)
+
+<!-- markdown-toc end -->
+
+## Introduction <a name="introduction"></a>
+
 
 De nombreux neurones du cortex visuel primaire sont sensibles à l’orientation du stimulus présenté. La courbe représentant l’activité de réponse d’un neurone en fonction de l’orientation présentée, appelée courbe d’accord (tuning curve), est typiquement en forme de cloche, la position du maximum correspondant à l’orientation préférentielle du neurone. Elle permet de prédire la réponse moyenne d’un neurone à une orientation donnée. Cependant, la réponse individuelle pour une même orientation varie d’un essai à l’autre en raison du bruit neuronal. Cette variabilité est particulièrement visible lorsque l’on trace l’activité d’une population entière de neurones en réponse à une grille d’une orientation θ donnée. Pour un essai donné, en traçant l’activité de chaque neurone de la population en fonction de son orientation préférentielle, on obtient un pic très bruité. Un autre essai avec la même orientation du stimulus conduirait à une courbe similaire, mais avec une réponse légèrement différente pour chaque neurone, et donc une position du pic central différente.
 
@@ -12,8 +34,12 @@ Il s’agit alors pour le cerveau d’estimer la valeur de l’orientation encod
 
 L’objectif de ce projet est de simuler un réseau de neurones récurrents capable d’implémenter un estimateur sans biais de ces deux variables, et dont la variance est égale à (ou très proche de, suivant le type de bruit) la variance minimale atteinte par l’estimateur au maximum de vraisemblance. On cherche donc à implémenter un estimateur de type observateur idéal. Pour cela, le principe consiste à utiliser un réseau de neurones récurrents dont la fonction d’activation comprend une normalisation divisive (divisive normalization), dont l’expression sera explicitée plus loin, reproduisant les fonctions d’activations observées pour des neurones du cortex visuel primaire. Il a en effet été prouvé (Denève et al., 1999) que le réseau de neurones qui en résulte permet d’implémenter un estimateur dont la variance est égale à la variance minimale atteinte par le maximum de vraisemblance dans le cas d’un bruit neuronal indépendant du taux de décharge, et très proche de la valeur minimale dans le cas plus réaliste, considéré ici, d’un bruit poissonnien. 
 
+## Programmation du réseau <a name="programmation-du-reseau"></a>
+
 Le réseau que nous considérons modélise une colonne corticale constituée d’une seule couche de neurones (unités ij) dont les champs récepteurs sont identiques, mais qui diffèrent par leurs orientations et fréquences spatiales préférentielles. Chaque neurone est repéré par deux indices, et le neurone ij est caractérisé par son orientation préférentielle <a href="https://www.codecogs.com/eqnedit.php?latex=\theta_{i}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\theta_{i}" title="\theta_{i}" /></a>	et sa fréquence spatiales <a href="https://www.codecogs.com/eqnedit.php?latex=\lambda_{j}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\lambda_{j}" title="\lambda_{j}" /></a>. Le réseau reçoit une activité en entrée provenant d’une couche précédente, qui représente soit une autre couche corticale soit le noyau géniculé latéral. (Nous ne modélisons donc pas explicitement cette couche, et nous concentrons sur l’entrée qu’elle fournit à chaque 
 neurone de notre réseau).  On désignera l’activité du réseau qui en résulte sous le terme d’activité en sortie (output activity).
+
+### Activité en entrée du réseau <a name="#activite-en-entree-du-reseau"></a>
 
 L’entrée fournie au réseau dépend de l’orientation θ et de la fréquence spatiale λ du stimulus présenté, qui sont encodées dans la couche précédente. Pour des valeurs de θ et λ données, l’activité totale en entrée du neurone ij, <a href="https://www.codecogs.com/eqnedit.php?latex=a_{ij}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?a_{ij}" title="a_{ij}" /></a>, est la somme de deux termes : le premier correspond à l’entrée moyenne  <a href="https://www.codecogs.com/eqnedit.php?latex=f_{ij}(\theta,\lambda)" target="_blank"><img src="https://latex.codecogs.com/gif.latex?f_{ij}(\theta,\lambda)" title="f_{ij}(\theta,\lambda)" /></a>, le second <a href="https://www.codecogs.com/eqnedit.php?latex=\xi_{ij}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\xi_{ij}" title="\xi_{ij}" /></a> à un terme de bruit autour de cette activité moyenne en entrée :
 
@@ -25,7 +51,7 @@ L’activité moyenne en entrée du neurone ij pour un stimulus d’orientation 
  
 où K, <a href="https://www.codecogs.com/eqnedit.php?latex=\sigma_{\theta}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\sigma_{\theta}" title="\sigma_{\theta}" /></a> et <a href="https://www.codecogs.com/eqnedit.php?latex=\sigma_{\lambda}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\sigma_{\lambda}" title="\sigma_{\lambda}" /></a>  sont des constantes, et les <a href="https://www.codecogs.com/eqnedit.php?latex=\theta_{i}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\theta_{i}" title="\theta_{i}" /></a> et <a href="https://www.codecogs.com/eqnedit.php?latex=\lambda_{j}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\lambda_{j}" title="\lambda_{j}" /></a> sont réparties régulièrement sur une grille de taille <a href="https://www.codecogs.com/eqnedit.php?latex=$$P_{\theta}&space;\times&space;P_{\lambda}&space;:\;&space;\theta_i&space;=&space;2\pi&space;i&space;/P_{\theta}\,&space;,&space;\:&space;i&space;=&space;1,...,P_{\theta}&space;\;\,&space;et&space;\,&space;\;&space;\lambda_j&space;=&space;2\pi&space;j&space;/P_{\lambda}\,&space;,&space;\:&space;j&space;=&space;1,...,P_{\lambda}&space;$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$P_{\theta}&space;\times&space;P_{\lambda}&space;:\;&space;\theta_i&space;=&space;2\pi&space;i&space;/P_{\theta}\,&space;,&space;\:&space;i&space;=&space;1,...,P_{\theta}&space;\;\,&space;et&space;\,&space;\;&space;\lambda_j&space;=&space;2\pi&space;j&space;/P_{\lambda}\,&space;,&space;\:&space;j&space;=&space;1,...,P_{\lambda}&space;$$" title="$$P_{\theta} \times P_{\lambda} :\; \theta_i = 2\pi i /P_{\theta}\, , \: i = 1,...,P_{\theta} \;\, et \, \; \lambda_j = 2\pi j /P_{\lambda}\, , \: j = 1,...,P_{\lambda} $$" /></a>. Le nombre de neurones dans le réseau est donc égal à <a href="https://www.codecogs.com/eqnedit.php?latex=$$P_{\theta}&space;\times&space;P_{\lambda}." target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$P_{\theta}&space;\times&space;P_{\lambda}." title="$$P_{\theta} \times P_{\lambda}." /></a>. Notons que la fréquence spatiale est traitée comme une variable périodique afin d’éviter les effets de bord. Le choix de fonctions circulaires normales plutôt que de gaussiennes s’explique par le fait que cette fonction est périodique.
 
-Nous avons créé deux listes theta_grid et lambda_grid contenant les <a href="https://www.codecogs.com/eqnedit.php?latex=\theta_{i}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\theta_{i}" title="\theta_{i}" /></a>  et les  <a href="https://www.codecogs.com/eqnedit.php?latex=\lambda_{j}", respectivement, et une fonction prenant en arguments l’orientation θ et la fréquence spatiale λ du stimulus présenté, et retournant la matrice des <a href="https://www.codecogs.com/eqnedit.php?latex=f_{ij}(\theta,\lambda)" target="_blank"><img src="https://latex.codecogs.com/gif.latex?f_{ij}(\theta,\lambda)" title="f_{ij}(\theta,\lambda)" /></a> :
+Nous avons créé deux listes theta_grid et lambda_grid contenant les <a href="https://www.codecogs.com/eqnedit.php?latex=\theta_{i}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\theta_{i}" title="\theta_{i}" /></a>  et les  <a href="https://www.codecogs.com/eqnedit.php?latex=\lambda_{j}", respectivement, et une fonction prenant en arguments l’orientation θ et la fréquence spatiale λ du stimulus présenté, et retournant la matrice des  :
 
 ```
 theta_grid = [2*math.pi*i/P_th for i in range(1,P_th+1)]
@@ -54,6 +80,9 @@ Nous avons créé une fonction qui prend en argument la matrice d’activité mo
     return A
 ```
 L’activité à l’entrée du réseau ainsi calculée, une fois tracée dans un espace à trois dimensions en fonction de l’orientation préférentielle et de la fréquence spatiale préférentielle des neurones du réseau, se présente sous la forme d’un pic fortement bruité (noisy hill).
+
+### Dynamique du réseau <a name="#dynamique"></a>
+
  A chaque itération, l’activité des neurones du réseau est mise à jour suivant les équations non-linéaires d’évolution suivantes : 
 
 <a href="https://www.codecogs.com/eqnedit.php?latex=$$u_{ij}\left&space;(&space;t&plus;1&space;\right&space;)&space;=&space;\sum_{kl}\,&space;w_{ij,k\,&space;l}\:&space;o_{k\,&space;l}\left&space;(&space;t&space;\right&space;)$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$u_{ij}\left&space;(&space;t&plus;1&space;\right&space;)&space;=&space;\sum_{kl}\,&space;w_{ij,k\,&space;l}\:&space;o_{k\,&space;l}\left&space;(&space;t&space;\right&space;)$$" title="$$u_{ij}\left ( t+1 \right ) = \sum_{kl}\, w_{ij,k\, l}\: o_{k\, l}\left ( t \right )$$" /></a>
@@ -68,6 +97,8 @@ où les <a href="https://www.codecogs.com/eqnedit.php?latex=$$\left&space;\{&spa
 
 où <a href="https://www.codecogs.com/eqnedit.php?latex=$$K_w$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$K_w$$" title="$$K_w$$" /></a> est une constante, et <a href="https://www.codecogs.com/eqnedit.php?latex=$$\delta_{w\theta}^{2}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$\delta_{w\theta}^{2}$$" title="$$\delta_{w\theta}^{2}$$" /></a> et <a href="https://www.codecogs.com/eqnedit.php?latex=$$\delta_{w\lambda}^{2}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$\delta_{w\lambda}^{2}$$" title="$$\delta_{w\lambda}^{2}$$" /></a> contrôlent la largeur des fonctions correspondant aux poids de filtrage.
 
+### Poids de filtrage <a name="#poids-de-filtrage"></a>
+
 Nous avons créé une fonction retournant les poids de filtrage <a href="https://www.codecogs.com/eqnedit.php?latex=$$w_{ij,&space;k\,&space;l}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$w_{ij,&space;k\,&space;l}$$" title="$$w_{ij, k\, l}$$" /></a> sous forme de matrice de taille <a href="https://www.codecogs.com/eqnedit.php?latex=$$P_{\theta}&space;\times&space;P_{\lambda}." target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$P_{\theta}&space;\times&space;P_{\lambda}." title="$$P_{\theta} \times P_{\lambda}." /></a> dont le coefficient à la mième ligne, nième colonne est égal à <a href="https://www.codecogs.com/eqnedit.php?latex=$$w_{i-k,&space;j-l}&space;=&space;w_{m,n}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$w_{i-k,&space;j-l}&space;=&space;w_{m,n}$$" title="$$w_{i-k, j-l} = w_{m,n}$$" /></a>,	le poids de filtrage pour i-k=m et j-l=n.
 
 ```
@@ -80,9 +111,13 @@ def filtering_weights() :
             W[m][n] = K_w * math.exp(C[m] + C[n])
     return W
 ```
+
+### Activité en sortie du réseau <a name="#activite-en-sortie-du-reseau"></a>
+
 Une fois les conditions initiales choisies, l’itération des deux équations d’évolution mettant à jour la dynamique du réseau entraîne la relaxation de l’activité corticale vers un état stable dans lequel elle prend la forme d’un pic lisse. Il faut seulement veiller à choisir un contraste suffisamment élevé. En pratique, on constate que 2-3 itérations suffisent pour faire converger la dynamique du réseau vers son état asymptotique. Nous avons écrit une fonction prenant en argument l’activité à l’entrée du réseau, la matrice des poids de filtrage et le nombre d’itérations des équations d’évolution, i.e. le nombre de fois que l’activité du réseau est mise à jour, et qui retourne l’activité en sortie du réseau mise à jour.
 ```
 #Cette fonction retourne l'activité du réseau au bout de n_iterations mises à jour  
+
 def output(input_activity, W, n_iterations) :
 #Condition initiale 
     O = input_activity.copy()
@@ -99,6 +134,9 @@ def output(input_activity, W, n_iterations) :
         O[:,:] = (U[:,:]**2)/(S + mu * sum_u )
     return O
 ```
+
+### Estimations de l’orientation et de la fréquence spatiale encodées par le réseau  <a name="#estimations"></a>
+
 La position de ce pic d’activité dépend de l’orientation θ et de la fréquence spatiale λ du stimulus présenté, et permet donc d’obtenir, pour chaque essai, des estimations de ces deux quantités, notées <a href="https://www.codecogs.com/eqnedit.php?latex=$$\hat{\theta}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$\hat{\theta}$$" title="$$\hat{\theta}$$" /></a> et <a href="https://www.codecogs.com/eqnedit.php?latex=$$\hat{\lambda}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$\hat{\lambda}$$" title="$$\hat{\lambda}$$" /></a>. Ainsi, à partir de l’activité en sortie du réseau, <a href="https://www.codecogs.com/eqnedit.php?latex=$$\hat{\theta}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$\hat{\theta}$$" title="$$\hat{\theta}$$" /></a> et <a href="https://www.codecogs.com/eqnedit.php?latex=$$\hat{\lambda}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$\hat{\lambda}$$" title="$$\hat{\lambda}$$" /></a>peuvent être déterminées en utilisant un estimateur complexe, équivalent à un estimateur de vecteur de population : 
 
 <a href="https://www.codecogs.com/eqnedit.php?latex=$$\hat{\theta}&space;=&space;phase\left&space;(&space;\sum_{kj}o_{kj}&space;\,&space;e^{i\theta_j}&space;\right&space;)$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$\hat{\theta}&space;=&space;phase\left&space;(&space;\sum_{kj}o_{kj}&space;\,&space;e^{i\theta_j}&space;\right&space;)$$" title="$$\hat{\theta} = phase\left ( \sum_{kj}o_{kj} \, e^{i\theta_j} \right )$$" /></a>
@@ -108,6 +146,9 @@ La position de ce pic d’activité dépend de l’orientation θ et de la fréq
 Nous avons donc écrit deux fonctions, theta_estimator(output) et lambda_estimator(output), qui prennent en argument l’activité en sortie du réseau et retournent respectivement les estimations <a href="https://www.codecogs.com/eqnedit.php?latex=$$\hat{\theta}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$\hat{\theta}$$" title="$$\hat{\theta}$$" /></a> et <a href="https://www.codecogs.com/eqnedit.php?latex=$$\hat{\lambda}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$\hat{\lambda}$$" title="$$\hat{\lambda}$$" /></a>: 
 
 ```
+#Cette fonction retourne l'estimation de l'orientation du stimulus sur
+# un essai calculée à partir de l'activité du réseau
+
 def theta_estimator(output) :
     Z = 0.0 + 0.0*1j
     C = list(map(lambda x: math.cos(x), theta_grid))
@@ -124,6 +165,7 @@ def theta_estimator(output) :
 
 #Cette fonction retourne l'estimation de la fréquence spatiale du stimulus sur
 # un essai calculée à partir de l'activité du réseau
+
 def lambda_estimator(output) :
     Z = 0.0 + 0.0*1j
     C = list(map(lambda x: math.cos(x), lambda_grid))
@@ -138,6 +180,9 @@ def lambda_estimator(output) :
         phase = phase + 2*math.pi # pour que la fréquence calculée soit dans l'intervalle [0;2π] 
     return phase
 ```
+
+### Moyenne et variance des estimations <a name="#moyenne-et-variance-des-estimations"></a>
+
 Il est alors possible de calculer la moyenne et la variance de l’estimation sur un grand nombre d’essais, ce qui permet in fine d’en évaluer sa qualité. Dans notre réseau, nous avons choisi des courbes d’accord, un bruit et des poids de filtrage qui restent invariants lorsque l’on interchange θ et λ. Par conséquent, les variances de <a href="https://www.codecogs.com/eqnedit.php?latex=$$\hat{\theta}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$\hat{\theta}$$" title="$$\hat{\theta}$$" /></a> et <a href="https://www.codecogs.com/eqnedit.php?latex=$$\hat{\lambda}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$\hat{\lambda}$$" title="$$\hat{\lambda}$$" /></a> sont identiques, et pour simplifier et gagner en temps de calcul, on ne s’intéressera qu’à la variance sur  <a href="https://www.codecogs.com/eqnedit.php?latex=$$\hat{\theta}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$\hat{\theta}$$" title="$$\hat{\theta}$$" /></a> dans un premier temps. 
 
 Afin de déterminer la moyenne et la variance de <a href="https://www.codecogs.com/eqnedit.php?latex=$$\hat{\theta}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$\hat{\theta}$$" title="$$\hat{\theta}$$" /></a> pour un jeu donné de paramètres du réseau, nous avons écrit une fonction stats_orientation_net(theta_p, lambda_p, ITC, W, n_iter) qui prend en argument l’orientation θ et de la fréquence spatiale λ du stimulus présenté, la matrice des courbes d’accord des neurones 〖 f〗_ij (θ,λ)  (calculée séparément), la matrice des poids de filtrage et le nombre de mises à jour de l’activité du réseau, et retourne la moyenne et la variance calculées sur n_trials = 1000 essais différents. A chaque essai, les valeurs de l’orientation θ et de la fréquence spatiale λ du stimulus en entrée du réseau étant donc fixées, cette fonction génère une nouvelle matrice d’activité totale, bruitée, en entrée du réseau, met à jour un nombre n_iter de fois l’activité du réseau jusqu’à relaxation et apparition d’un pic lisse, puis calcule les estimations<a href="https://www.codecogs.com/eqnedit.php?latex=$$\hat{\theta}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$\hat{\theta}$$" title="$$\hat{\theta}$$" /></a> et <a href="https://www.codecogs.com/eqnedit.php?latex=$$\hat{\lambda}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$\hat{\lambda}$$" title="$$\hat{\lambda}$$" /></a>. 
