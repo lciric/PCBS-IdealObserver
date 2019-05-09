@@ -205,7 +205,7 @@ Dans un premier temps, nous réalisons un essai unique afin de visualiser les ac
 #Initialisation de la matrice d'activité totale en entrée du réseau    
 A = input_activity(F)
 
-######## Visualisation de l'activité du réseau immédiatement après initialisation ##############
+######## Visualisation de l'activité du réseau immédiatement après initialisation #########
 initial_activity = output(A, W, 0)
 
 import matplotlib.pyplot as plt
@@ -265,11 +265,17 @@ plt.show()
 Dans un second temps, on s’intéresse à la performance de ce réseau dans l’estimation de l’orientation et de la fréquence spatiale du stimulus. Pour cela, on fait appel à la fonction stats_net(theta_p, lambda_p, F, W, n_iterations) qui retourne directement les moyennes et variances
 respectives des estimations <a href="https://www.codecogs.com/eqnedit.php?latex=$$\hat{\theta}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$\hat{\theta}$$" title="$$\hat{\theta}$$" /></a> et <a href="https://www.codecogs.com/eqnedit.php?latex=$$\hat{\lambda}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$\hat{\lambda}$$" title="$$\hat{\lambda}$$" /></a>,  sur n_iterations = 1000 essais. On constate que les estimations sont non-biaisées, i.e. les valeurs moyennes de <a href="https://www.codecogs.com/eqnedit.php?latex=$$\hat{\theta}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$\hat{\theta}$$" title="$$\hat{\theta}$$" /></a> et <a href="https://www.codecogs.com/eqnedit.php?latex=$$\hat{\lambda}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$\hat{\lambda}$$" title="$$\hat{\lambda}$$" /></a> convergent vers les valeurs véritables de θ et λ. De plus, les valeurs des variances demeurent très faibles également. 
 
-Conclusion 
+### Conclusion <a name="#conclusion"></a>
 
 Nous avons ainsi simulé une classe particulière de réseaux récurrents de neurones, que l’on retrouve dans tout le cortex, caractérisés par des courbes d’accord larges et dont la fonction d’activation est non linéaire et comprend une normalisation divisive. Nous avons montré que ce type de réseaux permet d’extraire des variables encodées dans l’activité bruitée d’une population de neurones. Il resterait à implémenter un estimateur de maximum de vraisemblance et à comparer sa variance avec celle de l’estimateur représenté par notre réseau afin de prouver qu’il s’agit bien d’un estimateur idéal. Ceci montrerait que les aires corticales peuvent être ajustées de sorte à réaliser une estimation au maximum de vraisemblance, ce qui suggèrerait que la capacité à traiter et décoder de manière optimale l’information contenue dans une entrée bruitée est une propriété générale du cortex.
 
+### Références <a name="#references"></a>
 
+Je me suis documenté sur la normalisation divisive et les réseaux de neurones implémentant un estimateur de type 'observateur idéal'  grâce à l'article : Deneve, S., Latham, P. E., & Pouget, A. (1999). Reading population codes: a neural implementation of ideal observers. Nature neuroscience, 2(8), 740. Pour les valeurs des paramètres du réseau, j'ai utilisé celles  de l'article : Deneve, S., Pouget, A., & Latham, P. E. (1999). Divisive normalization, line attractor networks and ideal observers. In <i>Advances in neural information processing systems </i> (pp. 104-110). 
+
+## Remarques finales <a name="remarques"></a>
+
+Pour ce qui est de mon niveau en programmation, j'ai suivi un cours d'initiation à Python en PSI*. Le contenu se limitait toutefois à des notions plutôt abstraites sans mise en application dans un contexte de modélisation réel. A travers ce cours, j'ai pu apprendre d'abord à coder pus proprement, en vue de produire un code lisible pour une personne extérieure, ainsi qu'à mener à terme un projet véritable centré sur la modélisation en neurosciences et s'appuyant sur un thème de recherche relativement récent et toujours particulièrement d'actualité. J'ai ainsi pu reproduire certains résultats importants de l'article de Denève et al. publié dans Nature Neuroscience. Ce cours m'a ainsi permis de gagner en autonomie dans la réalisation d'un projet de programmation en neurosciences cognitives, et a été également l'occasion d'apprendre à rédiger une documentation claire sur github.
 
 
 
