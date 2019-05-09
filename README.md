@@ -3,7 +3,7 @@
 Programmation d’un réseau récurrent de neurones capable d’implémenter un estimateur de type ‘observateur idéal’.
  
 Introduction
-
+<a href="https://www.codecogs.com/eqnedit.php?latex=$$\left&space;\{&space;w_{i&space;j,k\,&space;l}&space;\right&space;\}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$\left&space;\{&space;w_{i&space;j,k\,&space;l}&space;\right&space;\}$$" title="$$\left \{ w_{i j,k\, l} \right \}$$" /></a>
 De nombreux neurones du cortex visuel primaire sont sensibles à l’orientation du stimulus présenté. La courbe représentant l’activité de réponse d’un neurone en fonction de l’orientation présentée, appelée courbe d’accord (tuning curve), est typiquement en forme de cloche, la position du maximum correspondant à l’orientation préférentielle du neurone. Elle permet de prédire la réponse moyenne d’un neurone à une orientation donnée. Cependant, la réponse individuelle pour une même orientation varie d’un essai à l’autre en raison du bruit neuronal. Cette variabilité est particulièrement visible lorsque l’on trace l’activité d’une population entière de neurones en réponse à une grille d’une orientation θ donnée. Pour un essai donné, en traçant l’activité de chaque neurone de la population en fonction de son orientation préférentielle, on obtient un pic très bruité. Un autre essai avec la même orientation du stimulus conduirait à une courbe similaire, mais avec une réponse légèrement différente pour chaque neurone, et donc une position du pic central différente.
 
 
