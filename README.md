@@ -114,7 +114,7 @@ def filtering_weights() :
 
 ### Activité en sortie du réseau <a name="#activite-en-sortie-du-reseau"></a>
 
-Une fois les conditions initiales choisies, l’itération des deux équations d’évolution mettant à jour la dynamique du réseau entraîne la relaxation de l’activité corticale vers un état stable dans lequel elle prend la forme d’un pic lisse. Il faut seulement veiller à choisir un contraste suffisamment élevé. En pratique, on constate que 2-3 itérations suffisent pour faire converger la dynamique du réseau vers son état asymptotique. Nous avons écrit une fonction prenant en argument l’activité à l’entrée du réseau, la matrice des poids de filtrage et le nombre d’itérations des équations d’évolution, i.e. le nombre de fois que l’activité du réseau est mise à jour, et qui retourne l’activité en sortie du réseau mise à jour.
+Une fois les conditions initiales choisies, l’itération des deux équations d’évolution mettant à jour la dynamique du réseau entraîne la relaxation de l’activité corticale vers un état stable dans lequel elle prend la forme d’un pic lisse. Il faut seulement veiller à choisir un contraste suffisamment élevé. En pratique, on constate que 2-3 itérations suffisent pour faire converger la dynamique du réseau vers son état asymptotique. Nous avons écrit une fonction prenant en argument l’activité à l’entrée du réseau, la matrice des poids de filtrage et le nombre d’itérations des équations d’évolution, i.e. le nombre de fois que l’activité du réseau est mise à jour, et qui retourne l’activité en sortie du réseau mise à jour :
 ```
 #Cette fonction retourne l'activité du réseau au bout de n_iterations mises à jour  
 
