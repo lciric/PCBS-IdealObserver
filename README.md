@@ -37,7 +37,7 @@ L’objectif de ce projet est de simuler un réseau de neurones récurrents capa
 ## Programmation du réseau <a name="programmation-du-reseau"></a>
 
 Le réseau que nous considérons modélise une colonne corticale constituée d’une seule couche de neurones (unités ij) dont les champs récepteurs sont identiques, mais qui diffèrent par leurs orientations et fréquences spatiales préférentielles. Chaque neurone est repéré par deux indices, et le neurone ij est caractérisé par son orientation préférentielle <a href="https://www.codecogs.com/eqnedit.php?latex=\theta_{i}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\theta_{i}" title="\theta_{i}" /></a>	et sa fréquence spatiales <a href="https://www.codecogs.com/eqnedit.php?latex=\lambda_{j}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\lambda_{j}" title="\lambda_{j}" /></a>. Le réseau reçoit une activité en entrée provenant d’une couche précédente, qui représente soit une autre couche corticale soit le noyau géniculé latéral. (Nous ne modélisons donc pas explicitement cette couche, et nous concentrons sur l’entrée qu’elle fournit à chaque 
-neurone de notre réseau).  On désignera l’activité du réseau qui en résulte sous le terme d’activité en sortie (output activity).
+neurone de notre réseau).  On désignera l’activité du réseau qui en résulte sous le terme d’activité en sortie (<i>output activity</i>).
 
 ### Activité en entrée du réseau <a name="#activite-en-entree-du-reseau"></a>
 
