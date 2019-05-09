@@ -42,4 +42,22 @@ def input_tuning_curve(theta_p, lambda_p) :
 ```
 Le bruit est choisi de sorte à suivre une distribution gaussienne de moyenne nulle et de variance égale à l’activité moyenne du neurone : <a href="https://www.codecogs.com/eqnedit.php?latex=$$\sigma_{ij}^{2}&space;=&space;f_{ij}(\theta,\lambda)$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$\sigma_{ij}^{2}&space;=&space;f_{ij}(\theta,\lambda)$$" title="$$\sigma_{ij}^{2} = f_{ij}(\theta,\lambda)$$" /></a> , qui est une approximation raisonnable du bruit mesuré dans le cortex – on parle alors de bruit « proportionnel »(<i>proportional noise<i>). 
 Nous avons créé une fonction qui prend en argument la matrice d’activité moyenne en entrée correspondante (matrice des fij ), et qui retourne la matrice d'activité totale en entrée du réseau :
+ 
+``` 
+ def input_activity(ITC, theta_p, lambda_p) :
+    A = np.zeros((P_th,P_lamb))
+    for i in range(P_th):
+        for j in range(P_lamb):
+            variance = ITC[i][j]
+            bruit = random.gauss(0,variance)
+            A[i][j] = ITC[i][j] + bruit
+    return A
+```
+L’activité à l’entrée du réseau ainsi calculée, une fois tracée dans un espace à trois dimensions en fonction de l’orientation préférentielle et de la fréquence spatiale préférentielle des neurones du réseau, se présente sous la forme d’un pic fortement bruité (noisy hill).
+ A chaque itération, l’activité des neurones du réseau est mise à jour suivant les équations non-linéaires d’évolution suivantes : 
 
+<a href="https://www.codecogs.com/eqnedit.php?latex=$$u_{ij}\left&space;(&space;t&plus;1&space;\right&space;)&space;=&space;\sum_{kl}\,&space;w_{ij,k\,&space;l}\:&space;o_{k\,&space;l}\left&space;(&space;t&space;\right&space;)$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$u_{ij}\left&space;(&space;t&plus;1&space;\right&space;)&space;=&space;\sum_{kl}\,&space;w_{ij,k\,&space;l}\:&space;o_{k\,&space;l}\left&space;(&space;t&space;\right&space;)$$" title="$$u_{ij}\left ( t+1 \right ) = \sum_{kl}\, w_{ij,k\, l}\: o_{k\, l}\left ( t \right )$$" /></a>
+
+<a href="https://www.codecogs.com/eqnedit.php?latex=$$o_{ij}\left&space;(&space;t&plus;1&space;\right&space;)&space;=&space;\frac{u_{ij}\left&space;(&space;t&plus;1&space;\right&space;)^{2}}{S&plus;\mu\sum_{k\,&space;l}u_{k\,&space;l}\left&space;(&space;t&plus;1&space;\right&space;)^{2}}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$o_{ij}\left&space;(&space;t&plus;1&space;\right&space;)&space;=&space;\frac{u_{ij}\left&space;(&space;t&plus;1&space;\right&space;)^{2}}{S&plus;\mu\sum_{k\,&space;l}u_{k\,&space;l}\left&space;(&space;t&plus;1&space;\right&space;)^{2}}$$" title="$$o_{ij}\left ( t+1 \right ) = \frac{u_{ij}\left ( t+1 \right )^{2}}{S+\mu\sum_{k\, l}u_{k\, l}\left ( t+1 \right )^{2}}$$" /></a>
+
+où les <a href="https://www.codecogs.com/eqnedit.php?latex=$$\left&space;\{&space;w_{i&space;j,k\,&space;l}&space;\right&space;\}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$\left&space;\{&space;w_{i&space;j,k\,&space;l}&space;\right&space;\}$$" title="$$\left \{ w_{i j,k\, l} \right \}$$" /></a> sont les poids de filtrage (<i>filtering weights</i>)
