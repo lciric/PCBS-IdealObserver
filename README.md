@@ -1,6 +1,7 @@
 # PCBS-IdealObserver
 
 Programmation d’un réseau récurrent de neurones capable d’implémenter un estimateur de type ‘observateur idéal’ <a name="programmation-d-un-reseau-recurrent"></a> 
+================================================================================================================================================================================================================================================================================
 
 
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
