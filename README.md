@@ -261,6 +261,7 @@ ax = fig.add_subplot(111, projection='3d')
 ax.plot_surface(xs,ys,zs, rstride=1, cstride=1)
 plt.show()
 ```
+![Activité en entrée du réseau](input_activity.png)
 
 Puis nous faisons tourner la dynamique du réseau en faisant appel à la fonction ```output (A, W, n_iterations)``` qui calcule l'activité en sortie du réseau au bout de n_iterations = 3 mises à jour.
 ```
@@ -285,7 +286,9 @@ plt.ylabel('lambda')
 #plt.zlabel('Activity')
 plt.show()
 ```
-Dans un second temps, on s’intéresse à la performance de ce réseau dans l’estimation de (l’orientation et de) la fréquence spatiale du stimulus. Pour cela, on fait appel à la fonction ```stats_spat_freq_net(theta_p, lambda_p, F, W, n_iterations)``` qui retourne directement la moyenne et la variance de l'estimation <a href="https://www.codecogs.com/eqnedit.php?latex=$$\hat{\lambda}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$\hat{\lambda}$$" title="$$\hat{\lambda}$$" /></a>,  sur n_iterations = 1000 essais. On constate que les estimations sont non-biaisées, i.e. la valeur moyenne de <a href="https://www.codecogs.com/eqnedit.php?latex=$$\hat{\lambda}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$\hat{\lambda}$$" title="$$\hat{\lambda}$$" /></a> converge vers la valeur véritable de λ. De plus, la valeur de la variance demeure très faible également. 
+![Activité en sortie du réseau](output_activity_net.png)
+
+Dans un second temps, on s’intéresse à la performance de ce réseau dans l’estimation de (l’orientation et de) la fréquence spatiale du stimulus. Pour cela, on fait appel à la fonction ```stats_spat_freq_net(theta_p, lambda_p, F, W, n_iterations)``` qui retourne directement la moyenne et la variance de l'estimation <a href="https://www.codecogs.com/eqnedit.php?latex=$$\hat{\lambda}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$\hat{\lambda}$$" title="$$\hat{\lambda}$$" /></a>,  sur n_iterations = 1000 essais. On constate que les estimations sont non-biaisées, i.e. la valeur moyenne de <a href="https://www.codecogs.com/eqnedit.php?latex=$$\hat{\lambda}$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$\hat{\lambda}$$" title="$$\hat{\lambda}$$" /></a> converge vers la valeur véritable de λ. De plus, la valeur de la variance demeure très faible également. Par exemple, pour les valeurs de l'orientation et de la fréquence spatiale du stimulus prises précédemment (4π/3 = 4.1887902047863905 radians), on trouve une fréquence moyenne estimée de 4.185428103717334 et une variance de 0.020866906596267026. 
 
 ### Conclusion <a name="#conclusion"></a>
 
