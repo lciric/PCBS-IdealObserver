@@ -20,15 +20,16 @@ sigma_th = 0.38
 sigma_lamb = 0.38
 P_th = 20
 P_lamb = 20
-C= 0.5#1.#0.6
-mu = 0.002#0.01#0.002
+C= 0.5
+mu = 0.002
 S = 1
-delta_wth = 0.38#0.718#0.38#0.5
+delta_wth = 0.38
 theta_grid = [2*math.pi*i/P_th for i in range(1,P_th+1)]
 lambda_grid = [2*math.pi*i/P_lamb for i in range(1,P_lamb+1)]
 
 
 #Cette fonction retourne la matrice des fij(theta_p, lambda_p) avec theta_p et lambda_p en radians 
+
 def input_tuning_curve(theta_p, lambda_p) : 
     F=np.zeros((P_th,P_lamb))
     C1 = list(map(lambda x: (math.cos(theta_p - x) -1)/sigma_th**2, theta_grid))
@@ -40,6 +41,7 @@ def input_tuning_curve(theta_p, lambda_p) :
 
 
 #Cette fonction retourne la matrice d'activité totale en entrée du réseau
+
 def input_activity(ITC) :
     A = np.zeros((P_th,P_lamb))
     for i in range(P_th):
@@ -50,9 +52,9 @@ def input_activity(ITC) :
     return A
 
 K_w = 1.0
-print('filtering_weights = new')
-print('noise = flat')
+
 #Cette fonction retourne la matrice des poids synaptiques
+
 def filtering_weights() :
     W=np.zeros((P_th,P_lamb))
     for m in range(P_th):
@@ -62,6 +64,7 @@ def filtering_weights() :
 
            
 #Cette fonction retourne l'activité du réseau au bout de n_iterations mises à jour  
+
 def output(input_activity, W, n_iterations) :
 #Condition initiale 
     O = input_activity.copy()
@@ -80,6 +83,7 @@ def output(input_activity, W, n_iterations) :
 
 #Cette fonction retourne l'estimation de l'orientation du stimulus sur un essai
 #calculée à partir de l'activité du réseau 
+
 def theta_estimator(output) :
     Z = 0.0 + 0.0*1j
     C = list(map(lambda x: math.cos(x), theta_grid))
@@ -96,6 +100,7 @@ def theta_estimator(output) :
 
 #Cette fonction retourne l'estimation de la fréquence spatiale du stimulus sur
 # un essai calculée à partir de l'activité du réseau
+
 def lambda_estimator(output) :
     Z = 0.0 + 0.0*1j
     C = list(map(lambda x: math.cos(x), lambda_grid))
@@ -111,25 +116,10 @@ def lambda_estimator(output) :
     return phase
 
 
-#Cette fonction calcule l'orientation moyenne estimée par le réseau 
-#et la variance de l'orientation estimée sur n_trials essais différents
-def stats_orientation_net(theta_p, lambda_p, ITC, W, n_iter):
-    m = 0.0
-    v = 0.0
-    for i in range(n_trials):
-        #Initialisation de la matrice d'activité totale en entrée du réseau    
-        A = input_activity(ITC)  
-        #Calcul de l'activité en sortie du réseau au bout de n_iter mises à jour
-        O = output(A, W, n_iter)
-        #Calcul de l'estimation de l'orientation du stimulus par le réseau
-        theta_estimated = theta_estimator(O)
-        m += theta_estimated
-        v += (theta_estimated - theta_p)**2    
-    m = m/float(n_trials)
-    v = v/(float(n_trials)-1)
-    return m, v
-
-def stats_spat_freq_net(theta_p, lambda_p, ITC, W, n_iter):
+#Cette fonction calcule la fréquence spatiale moyenne estimée par le réseau 
+#et la variance de la fréquence spatiale estimée sur n_trials essais différents
+    
+def stats_net(theta_p, lambda_p, ITC, W, n_iter):
     m = 0.0
     v = 0.0
     for i in range(n_trials):
@@ -148,7 +138,7 @@ def stats_spat_freq_net(theta_p, lambda_p, ITC, W, n_iter):
 
 ###############################################################################################
 
-theta_p = 3*math.pi/3 #Orientation du stimulus
+theta_p = 4*math.pi/3 #Orientation du stimulus
 lambda_p = 4*math.pi/3 #Fréquence spatiale du stimulus
 
 #Calcul de la matrice des poids de filtrage 
@@ -159,7 +149,7 @@ F = input_tuning_curve(theta_p, lambda_p)
 
 ###############################################################################################
 
-########### Essai unique avec theta = 4π/3, lambda = 4π/3 #####################################
+########### Essai unique avec θ = 4π/3, λ = 4π/3 #####################################
 
 ###############################################################################################
 #Initialisation de la matrice d'activité totale en entrée du réseau    
@@ -196,6 +186,9 @@ zs = Z0.reshape((-1, P_th))
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')  
 ax.plot_surface(xs,ys,zs, rstride=1, cstride=1)
+plt.xlabel('θ')
+plt.ylabel('λ')
+ax.set_zlabel('Activity', fontsize=10)
 plt.show()
 
 ######## Visualisation de l'activité du réseau mise à jour après 3 iterations ################
@@ -214,28 +207,20 @@ zs = Z.reshape((-1, P_th))
 fig1 = plt.figure()
 ax = fig1.add_subplot(111, projection='3d')  
 ax.plot_surface(xs,ys,zs, rstride=1, cstride=1)
-plt.xlabel('theta')
-plt.ylabel('lambda')
-#plt.zlabel('Activity')
+plt.xlabel('θ')
+plt.ylabel('λ')
+ax.set_zlabel('Activity', fontsize=10)
 plt.show()
 
 
-##############################################################################################
+######################################################################################################
 
-#### Calcul de la moyenne et de la variance de l'estimation de l'orientation du stimulus  ####
+#### Calcul de la moyenne et de la variance de l'estimation de la fréquence spatiale du stimulus  ####
 
-##############################################################################################
+######################################################################################################
 
-print('Calcul de la moyenne et de la variance de l estimation de l orientation du stimulus en cours...')
-mean_theta_est, variance_theta = stats_orientation_net(theta_p, lambda_p, F, W, n_iterations)
-
-print('Orientation présentée égale à', theta_p, 'radians' )
-print ('Orientation moyenne estimée par le réseau : ', mean_theta_est, 'radians')
-print('Variance de l orientation estimée par le réseau : ', variance_theta)
-
-#mean_lambda_est, variance_lambda = stats_spat_freq_net(theta_p, lambda_p, F, W, n_iterations)
-#print('Fréquence spatiale présentée égale à', lambda_p, 'radians' )
-#print ('Fréquence spatiale moyenne estimée par le réseau égale à ', mean_lambda_est, 'radians')
-#print('Variance de la fréquence spatiale estimée par le réseau égale à ', variance_lambda)
-
-
+print('Calcul de la moyenne et de la variance de l estimation de la frequence spatiale du stimulus en cours...')
+mean_lambda_est, variance_lambda = stats_net(theta_p, lambda_p, F, W, n_iterations)
+print('Fréquence spatiale présentée égale à', lambda_p, 'radians' )
+print ('Fréquence spatiale moyenne estimée par le réseau égale à ', mean_lambda_est, 'radians')
+print('Variance de la fréquence spatiale estimée par le réseau égale à ', variance_lambda)
